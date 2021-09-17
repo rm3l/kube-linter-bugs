@@ -16,7 +16,17 @@ spec:
       labels:
         app: my-webserver
     spec:
+      securityContext:
+        runAsNonRoot: true
       containers:
       - image: nginx:alpine
         name: nginx
-        resources: {}
+        resources:
+          limits:
+            memory: 100Mi
+            cpu: 500m
+          requests:
+            memory: 50Mi
+            cpu: 250m
+        securityContext:
+          readOnlyRootFilesystem: true
