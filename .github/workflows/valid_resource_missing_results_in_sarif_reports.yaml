@@ -1,4 +1,4 @@
-name: Lint
+name: Valid Resource missing results field in SARIF report
 
 on:
   workflow_dispatch:
@@ -13,7 +13,7 @@ on:
 
 jobs:
 
-  valid_resource_missing_results_in_sarif_reports:
+  lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2.3.4
