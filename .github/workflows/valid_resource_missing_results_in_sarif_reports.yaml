@@ -33,7 +33,13 @@ jobs:
 
     - run: mkdir -p lint_results/.sarif
 
-    - name: Lint valid resource with Kube-Linter
+    - name: Lint valid resource with Kube-Linter (plain)
+      run: |
+        kube-linter lint \
+          sample_with_missing_results_field_in_sarif_report_if_no_errors.yaml \
+          --format plain
+
+    - name: Lint valid resource with Kube-Linter (SARIF)
       run: |
         kube-linter lint \
           sample_with_missing_results_field_in_sarif_report_if_no_errors.yaml \
