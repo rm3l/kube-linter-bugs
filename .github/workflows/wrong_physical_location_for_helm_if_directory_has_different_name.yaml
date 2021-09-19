@@ -38,7 +38,7 @@ jobs:
       continue-on-error: true
       run: |
         kube-linter lint \
-          sample_helm_chart_incorrect_physical_location_uri_in_sarif_report_if_folder_has_different_name.yaml \
+          sample_helm_chart_incorrect_physical_location_uri_in_sarif_report_if_folder_has_different_name \
           --format sarif \
         | jq | tee lint_results/.sarif/sample_helm_chart_incorrect_physical_location_uri_in_sarif_report_if_folder_has_different_name.sarif
 
