@@ -1,0 +1,51 @@
+name: Wrong physical location for Helm if chart and directory names are different
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [ main ]
+
+jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2.3.4
+
+    - uses: actions/setup-go@v2.1.4
+      with:
+        go-version: '^1.17'
+
+    # Needed as the SARIF format is not supported via the KubeLinter GitHub Action
+    # cf. https://github.com/stackrox/kube-linter-action/pull/6
+    - name: Download KubeLinter
+      env:
+        GO111MODULE: 'on'
+      run: go install golang.stackrox.io/kube-linter/cmd/kube-linter@latest
+
+    - run: kube-linter version
+
+    - run: mkdir -p lint_results/.sarif
+
+    - name: Lint valid resource with Kube-Linter (SARIF)
+      if: ${{ always() }}
+      continue-on-error: true
+      run: |
+        kube-linter lint \
+          sample_helm_chart_incorrect_physical_location_uri_in_sarif_report_if_folder_has_different_name.yaml \
+          --format sarif \
+        | jq | tee lint_results/.sarif/sample_helm_chart_incorrect_physical_location_uri_in_sarif_report_if_folder_has_different_name.sarif
+
+    - name: Upload SARIF reports to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v1
+      if: ${{ always() }}
+      continue-on-error: true
+      with:
+        sarif_file: 'lint_results/.sarif/'
+    
